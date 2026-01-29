@@ -1,15 +1,17 @@
-# 🌐 Site + API + Dashboard (Vercel)
-
-## Requisitos
-- Supabase (gratuito) para banco
-- Configurar ENV no Vercel (ver `.env.example`)
-- Rodar o SQL do arquivo `SUPABASE_SCHEMA.sql` no Supabase
+# É Os Pé Na Porta — Site (Vercel) com 1 API só
 
 ## Rotas
-- `/form?token=...` -> formulário
-- `/dashboard` -> painel admin (login Discord)
-- `/api/*` -> API
+- `/form.html?token=...&tag=...` — formulário
+- `/dashboard` — painel admin
+- `/api?op=...` — **única API** com todas as operações
 
-## Importante
-- Copie `BOT_API_KEY` do Vercel e cole no `.env` do bot (ShardCloud)
-- Configure `DISCORD_REDIRECT_URI` com seu domínio Vercel
+## Banco
+Usa **Vercel Postgres** (Storage). Ele cria `POSTGRES_URL` automaticamente.
+
+## Env vars (Vercel)
+- `SITE_API_KEY` (obrigatório) — mesma chave do bot
+- `DEFAULT_BONDE_LINK` (opcional)
+- `SITE_BASE_URL` (opcional)
+
+## Deploy
+Suba no GitHub e importe no Vercel.
