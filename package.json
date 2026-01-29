@@ -1,0 +1,9 @@
+{
+  "name": "pe-na-porta-site",
+  "version": "9.1.0",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.2",
+    "jose": "^5.9.3"
+  }
+}
