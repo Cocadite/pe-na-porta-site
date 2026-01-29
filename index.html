@@ -1,1 +1,265 @@
-<h1>É Os Pé Na Porta — Site</h1><p>Acesse <a href='/form/'>/form</a></p>
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>É Os Pé Na Porta — Portal</title>
+  <meta name="theme-color" content="#0b0b0f" />
+
+  <style>
+    :root{
+      --bg:#07070b;
+      --card:#0f0f17;
+      --card2:#0b0b12;
+      --line:rgba(255,255,255,.10);
+      --text:#f2f2ff;
+      --muted:#b7b7d6;
+      --red:#ff2a2a;
+      --red2:#b30000;
+      --glow: 0 18px 60px rgba(0,0,0,.55);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; min-height:100vh;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(900px 500px at 10% -10%, rgba(255,42,42,.16), transparent 55%),
+        radial-gradient(900px 500px at 90% 0%, rgba(255,0,0,.10), transparent 60%),
+        radial-gradient(800px 500px at 40% 115%, rgba(255,42,42,.08), transparent 60%),
+        linear-gradient(180deg, #07070b, #050509 55%, #06060a);
+      color:var(--text);
+      padding:22px;
+    }
+    .wrap{max-width:980px;margin:0 auto}
+    .top{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      margin:10px 0 18px;
+    }
+    .brand{display:flex;align-items:center;gap:12px}
+    .logo{
+      width:48px;height:48px;border-radius:16px;display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(255,42,42,.30), rgba(255,42,42,.06));
+      border:1px solid rgba(255,42,42,.25);
+      box-shadow: var(--glow);
+      font-size:22px;
+    }
+    h1{margin:0;font-size:22px;letter-spacing:.3px}
+    .sub{margin:4px 0 0;color:var(--muted);font-size:13px;line-height:1.35}
+    .pill{
+      display:inline-flex;align-items:center;gap:8px;
+      background:rgba(255,255,255,.04);
+      border:1px solid rgba(255,255,255,.10);
+      padding:10px 12px;border-radius:999px;
+      color:var(--muted);font-size:13px;white-space:nowrap;
+    }
+    .pill b{color:var(--text)}
+    .hero{
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(900px 450px at 0% 0%, rgba(255,42,42,.18), transparent 60%),
+        radial-gradient(700px 400px at 100% 20%, rgba(255,42,42,.10), transparent 60%),
+        linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.01));
+      box-shadow: var(--glow);
+      overflow:hidden;
+    }
+    .heroInner{
+      padding:18px;
+      display:grid;
+      grid-template-columns: 1.15fr .85fr;
+      gap:14px;
+    }
+    @media (max-width: 860px){
+      .heroInner{grid-template-columns:1fr}
+    }
+    .titleBig{
+      font-size:28px;
+      margin:2px 0 8px;
+      letter-spacing:.2px;
+    }
+    .desc{
+      color:var(--muted);
+      margin:0 0 14px;
+      line-height:1.5;
+      font-size:14px;
+    }
+    .badgeRow{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:10px 12px;border-radius:999px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      color:var(--muted);
+      font-size:13px;
+    }
+    .badge i{
+      width:10px;height:10px;border-radius:999px;display:inline-block;
+      background:linear-gradient(180deg, var(--red), var(--red2));
+      box-shadow:0 0 0 4px rgba(255,42,42,.12);
+    }
+    .panel{
+      background:rgba(0,0,0,.22);
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:18px;
+      padding:14px;
+    }
+    .panel h2{
+      margin:0 0 8px;font-size:15px;letter-spacing:.2px
+    }
+    .panel p{
+      margin:0 0 12px;color:var(--muted);font-size:13px;line-height:1.45
+    }
+    .btnRow{display:flex;flex-direction:column;gap:10px}
+    .btn{
+      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01));
+      color:var(--text);
+      padding:12px 14px;
+      text-decoration:none;
+      font-weight:900;
+      letter-spacing:.2px;
+      transition: transform .08s ease, filter .15s ease, border-color .15s ease;
+    }
+    .btn:hover{filter:brightness(1.06);border-color:rgba(255,42,42,.35)}
+    .btn:active{transform:translateY(1px)}
+    .btn.primary{
+      border:none;
+      background:linear-gradient(135deg, rgba(255,42,42,.95), rgba(160,0,0,.95));
+      color:#0b0b0f;
+    }
+    .btn .left{display:flex;align-items:center;gap:10px}
+    .ico{
+      width:38px;height:38px;border-radius:14px;display:grid;place-items:center;
+      background:rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.12);
+      font-size:18px;
+    }
+    .btn.primary .ico{
+      background:rgba(255,255,255,.20);
+      border-color:rgba(255,255,255,.20);
+    }
+    .hint{
+      margin-top:12px;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,42,42,.18);
+      background:linear-gradient(135deg, rgba(255,42,42,.14), rgba(255,42,42,.06));
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.45;
+    }
+    .hint b{color:var(--text)}
+    .grid2{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:12px;
+      padding:0 18px 18px;
+    }
+    @media (max-width: 860px){
+      .grid2{grid-template-columns:1fr}
+    }
+    .mini{
+      border-radius:18px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(0,0,0,.18);
+      padding:14px;
+    }
+    .mini h3{margin:0 0 6px;font-size:14px}
+    .mini p{margin:0;color:var(--muted);font-size:13px;line-height:1.45}
+    .footer{
+      margin-top:14px;
+      color:rgba(183,183,214,.85);
+      font-size:12px;
+      text-align:center;
+    }
+    .footer a{color:rgba(255,42,42,.95);text-decoration:none}
+    .footer a:hover{text-decoration:underline}
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <div class="logo">🦶</div>
+        <div>
+          <h1>É Os Pé Na Porta</h1>
+          <div class="sub">Portal oficial — Formulário e Painel de Administração</div>
+        </div>
+      </div>
+
+      <div class="pill">Status: <b>Online</b> • Região: <b>BR</b></div>
+    </div>
+
+    <section class="hero">
+      <div class="heroInner">
+        <div>
+          <div class="titleBig">Bem-vindo ao portal do bonde.</div>
+          <p class="desc">
+            Aqui você acessa o <b>formulário de entrada</b> (via link do Discord) e o
+            <b>painel de staff</b> para analisar e aprovar inscrições.
+          </p>
+
+          <div class="badgeRow">
+            <span class="badge"><i></i> Aprovação manual</span>
+            <span class="badge"><i></i> Logs completos</span>
+            <span class="badge"><i></i> Tema vermelho/preto</span>
+          </div>
+
+          <div class="hint">
+            ✅ <b>Dica:</b> o formulário normalmente é aberto com <b>token</b>.  
+            Se você entrar em <b>/form</b> sem token, pode dar 404 ou mostrar aviso — isso é normal.
+          </div>
+        </div>
+
+        <aside class="panel">
+          <h2>Atalhos</h2>
+          <p>Escolha o que você quer abrir:</p>
+
+          <div class="btnRow">
+            <a class="btn primary" href="/form">
+              <span class="left"><span class="ico">📝</span> Abrir Formulário</span>
+              <span>→</span>
+            </a>
+
+            <a class="btn" href="/dashboard">
+              <span class="left"><span class="ico">🛡️</span> Abrir Dashboard Admin</span>
+              <span>→</span>
+            </a>
+
+            <a class="btn" href="https://discord.com/" target="_blank" rel="noreferrer">
+              <span class="left"><span class="ico">💬</span> Abrir Discord</span>
+              <span>↗</span>
+            </a>
+          </div>
+        </aside>
+      </div>
+
+      <div class="grid2">
+        <div class="mini">
+          <h3>Como o formulário funciona</h3>
+          <p>
+            O bot gera um link único no Discord. Você preenche, envia, e o staff
+            aprova no dashboard.
+          </p>
+        </div>
+        <div class="mini">
+          <h3>Segurança</h3>
+          <p>
+            Tokens são únicos e o painel admin é separado. Não compartilhe links
+            do formulário.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="footer">
+      É Os Pé Na Porta 🦶🚪 • Se der 404 em <b>/dashboard</b>, é porque a dashboard está em outro projeto ou a rota ainda não existe.
+    </div>
+  </div>
+</body>
+</html>
