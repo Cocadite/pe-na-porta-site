@@ -16,8 +16,7 @@
         radial-gradient(1100px 600px at 15% -10%, rgba(255,26,26,.16), transparent 55%),
         radial-gradient(900px 600px at 90% 0%, rgba(255,26,26,.10), transparent 60%),
         var(--bg);
-      color:var(--text);padding:22px;
-      overflow-x:hidden;
+      color:var(--text);padding:22px;overflow-x:hidden;
     }
     .wrap{max-width:920px;margin:0 auto}
     .hero{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
@@ -124,14 +123,8 @@
 
 <script>
   const params = new URLSearchParams(location.search);
-
-  // API base pode vir por ?api=..., senão usa fixa
+  const token = (params.get("token") || "").trim();
   const API_BASE = (params.get("api") || "https://pnp-api.shardweb.app").replace(/\/$/,"");
-
-  // Dados "únicos" no link
-  const discordId = (params.get("discordId") || "").trim();
-  const discordTag = (params.get("discordTag") || "").trim();
-  const nickFromLink = (params.get("nick") || "").trim();
 
   function showErr(msg){
     document.getElementById("errText").textContent = msg;
@@ -143,53 +136,46 @@
     document.getElementById("alertErr").style.display = "none";
   }
 
-  function loadWho(){
-    if(!discordId || !discordTag){
-      document.getElementById("who").textContent = "link inválido";
+  async function loadWho(){
+    if(!token){
+      document.getElementById("who").textContent = "sem token";
       document.getElementById("discordTag").value = "";
-      showErr("Link inválido. Peça /form de novo no Discord.");
+      showErr("Token ausente. Volte no Discord e use /form.");
       return;
     }
-
-    document.getElementById("who").textContent = discordTag;
-    document.getElementById("discordTag").value = discordTag;
-
-    if (nickFromLink) {
-      document.getElementById("nick").value = nickFromLink;
+    try{
+      const res = await fetch(API_BASE + "/api/form/token/" + encodeURIComponent(token));
+      const data = await res.json().catch(()=> ({}));
+      if(!res.ok) throw new Error(data.error || ("HTTP " + res.status));
+      document.getElementById("who").textContent = data.discordTag || ("ID:" + (data.userId||"—"));
+      document.getElementById("discordTag").value = data.discordTag || "";
+    }catch(e){
+      document.getElementById("who").textContent = "token inválido";
+      showErr(e.message || "Token inválido. Volte no Discord e use /form.");
     }
   }
 
   async function submitForm(ev){
     ev.preventDefault();
-
     const idade = Number(document.getElementById("idade").value);
     const nick = document.getElementById("nick").value.trim();
     const motivo = document.getElementById("motivo").value.trim();
     const link = document.getElementById("linkBonde").value.trim();
 
-    if(!discordId || !discordTag) return showErr("Link inválido. Peça /form de novo."), false;
-    if(!nick) return showErr("Preencha o Nick."), false;
-    if(!motivo || motivo.length < 10) return showErr("Explique melhor (mínimo 10 caracteres)."), false;
-    if(!Number.isFinite(idade) || idade < 5 || idade > 120) return showErr("Idade inválida."), false;
-    if(!/^https?:\/\//i.test(link)) return showErr("Link do bonde inválido."), false;
+    if (!token) return showErr("Token ausente. Volte no Discord e use /form."), false;
+    if (!nick) return showErr("Preencha o Nick."), false;
+    if (!motivo || motivo.length < 10) return showErr("Explique melhor (mínimo 10 caracteres)."), false;
+    if (!Number.isFinite(idade) || idade < 5 || idade > 120) return showErr("Idade inválida."), false;
+    if (!/^https?:\/\//i.test(link)) return showErr("Link do bonde inválido."), false;
 
     try{
       const res = await fetch(API_BASE + "/api/form/submit", {
         method:"POST",
         headers:{ "Content-Type":"application/json" },
-        body: JSON.stringify({
-          discordId,
-          discordTag,
-          idade,
-          nick,
-          motivo,
-          linkBonde: link
-        })
+        body: JSON.stringify({ token, idade, nick, motivo, linkBonde: link })
       });
-
       const data = await res.json().catch(()=> ({}));
       if(!res.ok) throw new Error(data.error || ("HTTP "+res.status));
-
       showOk();
       return false;
     }catch(e){
@@ -200,7 +186,7 @@
 
   function fillExample(){
     document.getElementById("idade").value = "16";
-    document.getElementById("nick").value = nickFromLink || "Arroz_macio";
+    document.getElementById("nick").value = "Arroz_macio";
     document.getElementById("motivo").value = "Quero me juntar porque curto o bonde, sou ativo e quero evoluir com a galera.";
   }
 
