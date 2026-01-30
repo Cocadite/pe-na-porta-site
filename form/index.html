@@ -3,21 +3,32 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Formulário — Pé na Porta</title>
+  <title>Formulário — PNP</title>
   <style>
     :root{
-      --bg:#07070b;--card:#10101a;--card2:#0c0c13;--line:#2a2a3f;--text:#f3f3ff;--muted:#b8b8d6;
-      --red:#ff1a1a;--shadow:0 18px 60px rgba(0,0,0,.55);--radius:18px;
+      --bg:#07070b;--card:#10101a;--card2:#0c0c13;--line:rgba(255,255,255,.10);
+      --text:#f3f3ff;--muted:#b8b8d6;--red:#ff1a1a;--shadow:0 18px 60px rgba(0,0,0,.55);--radius:18px;
     }
     *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:
-      radial-gradient(1100px 600px at 15% -10%, rgba(255,26,26,.16), transparent 55%),
-      radial-gradient(900px 600px at 90% 0%, rgba(255,26,26,.10), transparent 60%),
-      var(--bg);color:var(--text);padding:22px}
+    body{
+      margin:0;min-height:100vh;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      background:
+        radial-gradient(1100px 600px at 15% -10%, rgba(255,26,26,.16), transparent 55%),
+        radial-gradient(900px 600px at 90% 0%, rgba(255,26,26,.10), transparent 60%),
+        var(--bg);
+      color:var(--text);padding:22px;
+      overflow-x:hidden;
+    }
     .wrap{max-width:920px;margin:0 auto}
     .hero{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap}
     .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:linear-gradient(135deg, rgba(255,26,26,.26), rgba(255,26,26,.08));border:1px solid rgba(255,26,26,.28);box-shadow:var(--shadow);font-size:22px}
+    .logo{
+      width:46px;height:46px;border-radius:14px;display:grid;place-items:center;
+      background:linear-gradient(135deg, rgba(255,26,26,.26), rgba(255,26,26,.08));
+      border:1px solid rgba(255,26,26,.28);box-shadow:var(--shadow);font-size:22px;
+      animation: float 2.8s ease-in-out infinite;
+    }
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
     h1{font-size:22px;margin:0;letter-spacing:.3px}
     .sub{margin:4px 0 0;color:var(--muted);font-size:13px}
     .pill{display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);padding:10px 12px;border-radius:999px;color:var(--muted);font-size:13px}
@@ -45,7 +56,6 @@
     .alert.ok{border-color: rgba(124,252,144,.35); display:block;}
     .alert.err{border-color: rgba(255,77,77,.35); display:block;}
     .alert b{color:var(--text)}
-    .small{opacity:.8;font-size:12px}
   </style>
 </head>
 <body>
@@ -55,25 +65,25 @@
         <div class="logo">🦶</div>
         <div>
           <h1>Formulário do Bonde</h1>
-          <div class="sub">Preencha com atenção. O staff aprova no dashboard.</div>
+          <div class="sub">Seu @ aparece automático. Staff aprova no painel.</div>
         </div>
       </div>
-      <div class="pill">Token: <b id="tok">—</b></div>
+      <div class="pill">Usuário: <b id="who">carregando...</b></div>
     </div>
 
     <div class="card">
       <div class="cardTop">
         <div class="banner">
-          ✅ <b>Importante:</b> este link é único. Se você errar, peça <b>/form</b> de novo no Discord.
-          <div class="small" id="apiInfo"></div>
+          ✅ <b>Importante:</b> este link é único e não deve ser compartilhado.
+          Se você errar algo, peça <b>#form</b> de novo no Discord.
         </div>
       </div>
 
       <form onsubmit="return submitForm(event)">
         <div class="grid">
           <div class="field">
-            <label>Nick do Discord <span class="hint">opcional</span></label>
-            <input id="discordTag" placeholder="SeuDiscord#0000 (opcional)" />
+            <label>@ do Discord <span class="hint">automático</span></label>
+            <input id="discordTag" readonly />
           </div>
 
           <div class="field">
@@ -87,7 +97,7 @@
           </div>
 
           <div class="field" style="grid-column:1/-1">
-            <label>Por que quer se juntar <span class="hint">seja direto</span></label>
+            <label>Por que quer se juntar ao bonde <span class="hint">seja direto</span></label>
             <textarea id="motivo" maxlength="700" placeholder="Explique por que você quer entrar..." required></textarea>
           </div>
 
@@ -106,23 +116,16 @@
         <div id="alertErr" class="alert err">❌ <b>Erro:</b> <span id="errText">Verifique os campos.</span></div>
 
         <div class="footerNote">
-          Ao enviar, sua inscrição entra na fila do dashboard e no log do Discord.
-          Após aprovação, o bot dá o cargo automaticamente.
+          Ao enviar, o staff receberá sua inscrição no painel. Após aprovação, o bot dará o cargo automaticamente.
         </div>
       </form>
     </div>
   </div>
 
 <script>
-  // >>> CONFIG PADRÃO (troca aqui se quiser)
-  const DEFAULT_API_BASE = "https://api-pe-na-porta.vercel.app";
-  const SUBMIT_PATH = "/api/form/submit"; // ajusta se sua rota for outra
-
   const params = new URLSearchParams(location.search);
   const token = (params.get("token") || "").trim();
-  const apiBase = (params.get("api") || DEFAULT_API_BASE).replace(/\/$/, "");
-  document.getElementById("tok").textContent = token || "sem token";
-  document.getElementById("apiInfo").textContent = "API: " + apiBase + SUBMIT_PATH;
+  const API_BASE = (params.get("api") || "https://pnp-api.shardweb.app").replace(/\/$/,"");
 
   function showErr(msg){
     document.getElementById("errText").textContent = msg;
@@ -134,6 +137,24 @@
     document.getElementById("alertErr").style.display = "none";
   }
 
+  async function loadWho(){
+    if(!token){
+      document.getElementById("who").textContent = "sem token";
+      document.getElementById("discordTag").value = "";
+      return;
+    }
+    try{
+      const res = await fetch(API_BASE + "/api/form/token/" + encodeURIComponent(token));
+      const data = await res.json().catch(()=> ({}));
+      if(!res.ok) throw new Error(data.error || ("HTTP " + res.status));
+      document.getElementById("who").textContent = data.discordTag || ("ID:" + (data.userId||"—"));
+      document.getElementById("discordTag").value = data.discordTag || "";
+    }catch(e){
+      document.getElementById("who").textContent = "token inválido";
+      showErr(e.message || "Token inválido. Peça #form de novo.");
+    }
+  }
+
   async function submitForm(ev){
     ev.preventDefault();
 
@@ -141,38 +162,21 @@
     const nick = document.getElementById("nick").value.trim();
     const motivo = document.getElementById("motivo").value.trim();
     const link = document.getElementById("linkBonde").value.trim();
-    const discordTag = document.getElementById("discordTag").value.trim();
 
-    if (!token) return showErr("Token ausente. Peça /form de novo."), false;
+    if (!token) return showErr("Token ausente. Peça #form de novo."), false;
     if (!nick) return showErr("Preencha o Nick."), false;
     if (!motivo || motivo.length < 10) return showErr("Explique melhor (mínimo 10 caracteres)."), false;
     if (!Number.isFinite(idade) || idade < 5 || idade > 120) return showErr("Idade inválida."), false;
     if (!/^https?:\/\//i.test(link)) return showErr("Link do bonde inválido."), false;
 
     try{
-      // Se sua API exigir uma chave no submit (não recomendado), dá pra passar ?formKey=... só pra teste.
-      // O ideal é submit público só com token, e o token é validado no backend.
-      const formKey = (params.get("formKey") || "").trim();
-
-      const headers = {"Content-Type":"application/json"};
-      if (formKey) headers["Authorization"] = "Bearer " + formKey;
-
-      const res = await fetch(apiBase + SUBMIT_PATH, {
+      const res = await fetch(API_BASE + "/api/form/submit", {
         method:"POST",
-        headers,
-        body: JSON.stringify({
-          token,
-          discordTag,
-          nick,
-          idade,
-          motivo,
-          linkBonde: link
-        })
+        headers:{ "Content-Type":"application/json" },
+        body: JSON.stringify({ token, idade, nick, motivo, linkBonde: link })
       });
-
       const data = await res.json().catch(()=> ({}));
       if(!res.ok) throw new Error(data.error || ("HTTP "+res.status));
-
       showOk();
       return false;
     }catch(e){
@@ -184,8 +188,10 @@
   function fillExample(){
     document.getElementById("idade").value = "16";
     document.getElementById("nick").value = "Arroz_macio";
-    document.getElementById("motivo").value = "Quero me juntar porque sou ativo e quero fortalecer o bonde com a galera.";
+    document.getElementById("motivo").value = "Quero me juntar porque curto o bonde, sou ativo e quero evoluir com a galera.";
   }
+
+  loadWho();
 </script>
 </body>
-              </html>
+</html>
